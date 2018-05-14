@@ -1,0 +1,41 @@
+<!doctype html>
+
+
+<head>
+  <title>{{title}}</title>
+  <meta name="viewport" content="initial-scale=1.0">
+  <meta charset="utf-8">
+  <link type="text/css" rel="stylesheet" href="/stylesheet.css">
+
+</head>
+
+
+<header>
+  <div>
+
+    <div class="appName">
+      Spätifinder Berlin
+    </div>
+    <div class="searchContainer">
+      <input type="text" id="address" placeholder=" e.g. Skalitzer Straße"></input>
+      <button type="submit" id="searchAddress">Search</button>
+    </div>
+    <div class="menuContainer">
+      <img id="menu" src="./menu-icon.png"></img>
+    </div>
+  </div>
+</header>
+
+<body>
+  {{{body}}}
+  <div id="map"></div>
+
+
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script type="text/javascript" src="scribbles.js"></script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD4WhuiOWGjYKxfeO7RrqJsk0llTAEx5Kc&callback=geoFindMe">
+  </script>
+
+</body>
+
+</html>

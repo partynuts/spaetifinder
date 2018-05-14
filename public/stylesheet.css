@@ -1,0 +1,73 @@
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  height: 6vh;
+  top: 0vh;
+  position: relative;
+  padding: 1vh;
+  background: rgb(0, 0, 0);
+  color: white;
+}
+
+.appName {
+  display: inline-block;
+  padding-left: 2vw;
+  font-size: 2.5vh;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  border: none;
+  color: rgba(255, 255, 255, 1);
+  text-decoration: normal;
+  -o-text-overflow: clip;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 1), 0 0 20px rgba(255, 255, 255, 1),
+    0 0 30px rgba(255, 255, 255, 1), 0 0 40px #ff00de, 0 0 70px #ff00de,
+    0 0 80px #ff00de, 0 0 100px #ff00de;
+  -webkit-transition: all 200ms cubic-bezier(0.42, 0, 0.58, 1);
+  -moz-transition: all 200ms cubic-bezier(0.42, 0, 0.58, 1);
+  -o-transition: all 200ms cubic-bezier(0.42, 0, 0.58, 1);
+  transition: all 200ms cubic-bezier(0.42, 0, 0.58, 1);
+}
+
+.searchContainer {
+  display: inline-block;
+  margin-left: 2vw;
+}
+
+#searchAddress {
+  margin-left: 2vw;
+}
+
+#searchAddress:hover {
+  cursor: pointer;
+}
+
+.menuContainer {
+  width: 7vw;
+  height: 7vw;
+  float: right;
+}
+
+#menu {
+  width: 7vw;
+  height: 7vw;
+  /* box-shadow: 0 0 10px rgba(255, 255, 255, 1), 0 0 20px rgba(255, 255, 255, 1),
+    0 0 30px rgba(255, 255, 255, 1), 0 0 40px #00ffff, 0 0 70px #00ffff,
+    0 0 80px #00ffff, 0 0 100px #00ffff; */
+}
+
+#menu:hover {
+  box-shadow: 0 0 10px rgba(255, 255, 255, 1), 0 0 20px rgba(255, 255, 255, 1),
+    0 0 30px rgba(255, 255, 255, 1), 0 0 40px #00ffff, 0 0 70px #00ffff,
+    0 0 80px #00ffff, 0 0 100px #00ffff;
+}
+
+#map {
+  height: 100%;
+  top: 0;
+}
