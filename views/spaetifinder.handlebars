@@ -5,6 +5,7 @@
   <title>{{title}}</title>
   <meta name="viewport" content="initial-scale=1.0">
   <meta charset="utf-8">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
   <link type="text/css" rel="stylesheet" href="/stylesheet.css">
 
 </head>
@@ -21,7 +22,8 @@
       <button type="submit" id="searchAddress">Search</button>
     </div>
     <div class="menuContainer">
-      <img id="menu" src="./menu-icon.png"></img>
+      <i class="fas fa-ellipsis-v" style="font-size: 1em; color:white"></i>
+
     </div>
   </div>
 </header>
@@ -30,6 +32,22 @@
   {{{body}}}
   <div id="map"></div>
 
+  <div id="modal" class="modal">
+    <div class="modal-body">
+      <p id="closeTag">x</p>
+      <h3 class="name"></h3>
+      <p class="spaetiAddress"></p>
+      <div>Distance to current location:
+      <p class="distance"></p>
+    </div>
+      <div class="titles">Opening hours:
+        <p class="openingHours"></p>
+      </div>
+      <div class="titles"> Choice of products:
+        <p class="offer"> </p>
+      </div>
+    </div>
+  </div>
 
   <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
   <script type="text/javascript" src="scribbles.js"></script>

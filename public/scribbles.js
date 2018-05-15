@@ -19,26 +19,67 @@ $("#searchAddress").on("click touchstart", function searchAddress() {
   });
 });
 
-function addCustomMarker(data) {
+async function addCustomMarker(data) {
+  console.log("DATATEST", data);
   var image = "./bierhand.png";
 
-  window.setTimeout(function() {
-    myMarker.push(
-      new google.maps.Marker({
-        position: data.Position,
-        title: data.Name,
-        map: map,
-        animation: google.maps.Animation.DROP,
-        icon: {
-          url: image,
-          scaledSize: {
-            width: 60,
-            height: 60
-          }
-        }
-      })
+  var singleMarker = await new google.maps.Marker({
+    position: data.Position,
+    Name: data.Name,
+    id: data.id,
+    Address: data.Address,
+    Opening: data.Opening,
+    Offer: data.Offer,
+    Distance: data.Distance,
+    map: map,
+    // animation: google.maps.Animation.DROP,
+    icon: {
+      url: image,
+      scaledSize: {
+        width: 60,
+        height: 60
+      }
+    }
+  });
+  console.log("CurrentMarketInfo", singleMarker);
+  // window.setTimeout(function() {
+  myMarker.push(singleMarker);
+
+  // }, data.Index * 200);
+
+  singleMarker.addListener("click", function(e) {
+    $(".modal").css("display", "block");
+
+    $(".modal-body").animate(
+      {
+        display: "block",
+        height: "toggle"
+      },
+      300,
+      function() {
+        console.log("Animation complete");
+      }
     );
-  }, data.Index * 200);
+
+    $(".name").html(singleMarker.Name);
+    $(".spaetiAddress").html(singleMarker.Address);
+    $(".distance").html(`${Math.round(singleMarker.Distance * 1000)} meter`);
+    if (singleMarker.Opening.includes("unbekannt")) {
+      $(".openingHours").html("not provided");
+    } else {
+      $(".openingHours").html(singleMarker.Opening);
+    }
+
+    var listOfItems = "";
+    singleMarker.Offer.forEach(item => {
+      listOfItems += `${item.Caption}, `;
+    });
+    $(".offer").html(listOfItems);
+  });
+  $("#closeTag").on("click touchstart", function() {
+    $(".modal").css("display", "none");
+    $(".modal-body").css("display", "none");
+  });
 }
 
 function clearMap() {
@@ -49,7 +90,6 @@ function clearMap() {
     myMarker = [];
   }
 }
-// url: "http://m.spätifinder.de/apiv2/?" + token + curLatLongDis,
 
 function loadSpaetis(location) {
   var curLatLongDis = getDistanceFromCurrentLocation(location);
@@ -59,7 +99,7 @@ function loadSpaetis(location) {
     method: "GET",
     type: "application/json",
     success: function(dataList) {
-      console.log("Results for spätis", typeof dataList);
+      console.log("Results for spätis", typeof dataList, dataList);
 
       clearMap();
 
@@ -71,13 +111,18 @@ function loadSpaetis(location) {
 
         addCustomMarker({
           Name: data.Name,
+          Address: data.Street,
+          Opening: data.BusinessHours,
+          Offer: data.tags,
+          Distance: data.distance,
+          id: data.ID,
           Position: latlng,
           Index: index //nötig für das setTimeout
         });
       });
     },
     error: function() {
-      alert("boom");
+      console.log("ERROR in loading Spätis");
     }
   });
 }
@@ -158,3 +203,84 @@ function setCurrentPos(location) {
 
   loadSpaetis(location);
 }
+
+//MODAL
+// (function() {
+//
+//   // Simple modal
+// 	var modal = {
+// 		init: function() {
+//
+// 			// Get the stuff
+// 			this.clickToOpenModal();
+//
+// 			// Close the stuff
+// 			this.closeModal();
+//
+// 		},
+// 		clickToOpenModal: function(context, thisLink) {
+//
+// 			$('a[data-behaviour="modal"]').on('click', function(e) {
+// 				var thisLink = $(this);
+//
+// 				var context = {
+// 					title: thisLink.data('title'),
+// 					content: thisLink.data('content')
+// 				};
+//
+// 				e.preventDefault();
+//
+// 		     // Do nothing if open
+// 		     if ( modal.outercontainer.children('div#modal').length ) return;
+//
+// 		     // Attach the content to the the modal
+// 				modal.attachTemplate(context, thisLink);
+//
+// 				// Trigger the open event
+// 				thisLink.trigger('open');
+// 			});
+//
+// 		},
+// 		attachTemplate: function(context, thisLink) {
+// 			 var source = Handlebars.compile(this.source);
+//
+//         this.outercontainer
+//           .append(source(context))
+//           .promise()
+//           .done(function() {
+//
+//           this
+//             .children('div#modal')
+//             .addClass('modal-visible');
+//
+//            // Close the stuff
+//            thisLink.one('open', function() {
+//              modal.closeModal();
+//            });
+//
+//        });
+// 		},
+// 		closeModal: function() {
+// 			var container = $("div#modal");
+//
+// 			// Remove modal on click background
+// 			container.on('click', function() {
+// 				container.remove();
+//
+// 			});
+// 			// Remove modal on keypress ESC
+// 			$(document).on( 'keydown', function (e) {
+// 			    if ( e.keyCode === 27 ) {
+// 			       container.remove();
+// 			    }
+// 			});
+// 			// You can click on modal body
+// 			container.find('div.modal-body').on('click', function(e) {
+// 				e.stopPropagation();
+// 			});
+// 		}
+// 	};
+//
+// 	modal.init();
+//
+// })();
