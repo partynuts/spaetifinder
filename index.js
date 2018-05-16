@@ -1,7 +1,7 @@
 const express = require("express");
 const http = require("http");
 const app = express();
-const secrets = require("./secrets.json");
+const { Token } = process.ENV || require("./secrets.json");
 const request = require("request");
 const hb = require("express-handlebars");
 
@@ -26,7 +26,7 @@ app.get("/results", function(req, res) {
   console.log("req query", req.query);
   var qs = {
     action: "list",
-    apitoken: process.ENV.Token || secrets.Token,
+    apitoken: Token,
     lat: req.query.lat,
     long: req.query.long,
     distance: req.query.distance
