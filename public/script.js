@@ -139,17 +139,17 @@ function addMarkerToMap(data) {
   });
 }
 
-function getGeoSearchParams(location, distance) {
-  console.log("DEF DISTANCE", distance);
-  return (
-    "?&lat=" +
-    location.lat() +
-    "&long=" +
-    location.lng() +
-    "&distance=" +
-    distance
-  );
-}
+// function getGeoSearchParams(location, distance) {
+//   console.log("DEF DISTANCE", distance);
+//   return (
+//     "?&lat=" +
+//     location.lat() +
+//     "&long=" +
+//     location.lng() +
+//     "&distance=" +
+//     distance
+//   );
+// }
 
 function geoFindMe() {
   navigator.geolocation.getCurrentPosition(success, error);
@@ -162,7 +162,8 @@ function geoFindMe() {
     setCurrentPos(location);
   }
 
-  function error() {
+  function error(a) {
+    console.log("ERROR", a);
     latitude = 52.520007;
     longitude = 13.404954;
     console.log("ACCESS DENIED. DEFAULT POS", latitude, longitude);
@@ -225,9 +226,6 @@ function setCurrentPos(location) {
       },
       title: "You are here"
     });
-
-    // enableWatchPosition(location);
-    // enableOrientationArrow(location);
   }
   loadSpaetis(location);
 }
@@ -260,58 +258,3 @@ function zoomFunction() {
   console.log("DISTANCE", distance);
   loadSpaetis(location);
 }
-
-////////ORIENTATION Marker ///////////////////////
-// var id, destination, options;
-// var img = "./manup-icon.png";
-// var myLocationMarker;
-// //Verfolgen beginnen
-// id = navigator.geolocation.watchPosition(function(position) {
-//   watchMyPos,
-//     ((destination = {
-//       latitude: 0,
-//       longitude: 0
-//     }),
-//     (options = {
-//       enableHighAccuracy: false,
-//       timeout: 500,
-//       maximumAge: 0
-//     }));
-//   // myLocationMarker = new google.maps.Marker({
-//   //   clickable: false,
-//   //   icon: {
-//   //     url: img,
-//   //
-//   //     scale: 2.5
-//   //   },
-//   //   shadow: null,
-//   //   zIndex: 999,
-//   //   map: map
-//   // });
-//   // console.log("myLocationMarker", myLocationMarker);
-// });
-//
-// function watchMyPos(position) {
-//   var currently = position.coords;
-//   myLocationMarker = new google.maps.Marker({
-//     clickable: false,
-//     icon: {
-//       url: img,
-//
-//       scale: 2.5
-//     },
-//     shadow: null,
-//     zIndex: 999,
-//     map: map
-//   });
-//   console.log("myLocationMarker", myLocationMarker);
-//   console.log("TADAAAA");
-//   // if (
-//   //   destination.latitude === currently.latitude &&
-//   //   destination.longitude === currently.longitude
-//   // ) {
-//   //   console.log("Sie haben Ihr Ziel erreicht");
-//   //   //Verfolgen beenden
-//   //   navigator.geolocation.clearWatch(id);
-//   // }
-// }
