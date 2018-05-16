@@ -194,7 +194,7 @@ function mapDragendEventFunction(e) {
     clearMap();
   }
   console.log("DIST", p2pDistance);
-  loadSpaetis(location, distance);
+  loadSpaetis(location);
 }
 
 function clearMap() {
@@ -206,18 +206,12 @@ function clearMap() {
   }
 }
 
-function setCurrentPos(location, distance) {
+function setCurrentPos(location) {
   map.setCenter(location);
-  // zoomFunction(location);
-
   if (currentPositionMarker) {
-    console.log("default distance 2", distance);
-
     currentPositionMarker.setPosition(location);
   } else {
-    console.log("default distance 1", distance);
     var image = "./here.png";
-
     currentPositionMarker = new google.maps.Marker({
       position: location,
       map: map,
@@ -231,49 +225,39 @@ function setCurrentPos(location, distance) {
       title: "You are here"
     });
 
-    loadSpaetis(location, 0.6);
     // enableWatchPosition(location);
     // enableOrientationArrow(location);
   }
+  loadSpaetis(location);
 }
 
 function zoomFunction(location) {
-  console.log("ZOOMING");
-
   map.addListener("zoom_changed", function() {
     var userZoom = map.getZoom();
-    console.log("User Zoom", userZoom);
+
     // infowindow.setContent("Zoom: " + map.getZoom());
     if (userZoom == 18) {
       distance = 0.4;
-      console.log("def Dis", location, distance);
     }
     if (userZoom == 17) {
       distance = 0.5;
-      console.log("def Dis", location, distance);
     }
     if (userZoom == 16) {
       distance = 0.7;
-      console.log("def Dis", location, distance);
     }
     if (userZoom == 15) {
       distance = 0.9;
-      console.log("def Dis", location, distance);
     }
     if (userZoom == 14) {
       distance = 1.1;
-      console.log("def Dis", location, distance);
     }
     if (userZoom == 13) {
       distance = 1.3;
-      console.log("def Dis", location, distance);
     }
     if (userZoom == 12) {
       distance = 1.5;
-      console.log("def Dis", location, distance);
     }
-    console.log("SOMETHING WEIRD HAPPENING");
-    loadSpaetis(location, distance);
+    loadSpaetis(location);
   });
 }
 
