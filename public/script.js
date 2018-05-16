@@ -104,7 +104,7 @@ async function addCustomMarker(data) {
   });
 }
 
-function loadSpaetis(location, distance) {
+function loadSpaetis(location) {
   var curLatLongDis = getGeoSearchParams(location, distance || defaultDistance);
   console.log("SUCHPARAMS", curLatLongDis);
   reqSpaetis = $.ajax({
@@ -176,6 +176,7 @@ function initMap() {
   map = new google.maps.Map(document.getElementById("map"), { zoom: 16 });
   map.addListener("dragstart", mapDragstartEventFunction);
   map.addListener("dragend", mapDragendEventFunction);
+  map.addListener("zoom_changed", zoomFunction);
 }
 
 function mapDragstartEventFunction() {
@@ -231,34 +232,33 @@ function setCurrentPos(location) {
   loadSpaetis(location);
 }
 
-function zoomFunction(location) {
-  map.addListener("zoom_changed", function() {
-    var userZoom = map.getZoom();
-
-    // infowindow.setContent("Zoom: " + map.getZoom());
-    if (userZoom == 18) {
-      distance = 0.4;
-    }
-    if (userZoom == 17) {
-      distance = 0.5;
-    }
-    if (userZoom == 16) {
-      distance = 0.7;
-    }
-    if (userZoom == 15) {
-      distance = 0.9;
-    }
-    if (userZoom == 14) {
-      distance = 1.1;
-    }
-    if (userZoom == 13) {
-      distance = 1.3;
-    }
-    if (userZoom == 12) {
-      distance = 1.5;
-    }
-    loadSpaetis(location);
-  });
+function zoomFunction() {
+  var location = map.getCenter();
+  console.log("LOCATIONN in zoomfn", location);
+  var userZoom = map.getZoom();
+  if (userZoom == 18) {
+    distance = 0.4;
+  }
+  if (userZoom == 17) {
+    distance = 0.5;
+  }
+  if (userZoom == 16) {
+    distance = 0.7;
+  }
+  if (userZoom == 15) {
+    distance = 0.9;
+  }
+  if (userZoom == 14) {
+    distance = 1.1;
+  }
+  if (userZoom == 13) {
+    distance = 1.3;
+  }
+  if (userZoom == 12) {
+    distance = 1.5;
+  }
+  console.log("DISTANCE", distance);
+  loadSpaetis(location);
 }
 
 ////////ORIENTATION Marker ///////////////////////
