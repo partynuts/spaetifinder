@@ -8,6 +8,7 @@ var myMarker = [];
 var geocoder;
 var reqSpaetis;
 var meter;
+var startingPoint;
 
 function init() {
   initMap();
@@ -103,26 +104,14 @@ async function addCustomMarker(data) {
   });
 }
 
-function clearMap() {
-  return;
-  if (myMarker.length) {
-    myMarker.forEach(indivMarker => {
-      indivMarker.setMap(null); //dem Marker wird an dieser Stelle keine Map mehr zugeordnet
-    });
-    myMarker = [];
-  }
-}
-
 function loadSpaetis(location, distance) {
-  console.log("def dist", distance);
   var curLatLongDis = getGeoSearchParams(location, distance || defaultDistance);
-  console.log("curcatlongdis in getGeoSearchParams", curLatLongDis);
+  console.log("SUCHPARAMS", curLatLongDis);
   reqSpaetis = $.ajax({
     url: "/results" + curLatLongDis,
     method: "GET",
     type: "application/json",
     success: function(dataList) {
-      clearMap();
       console.log("DATALIST", dataList);
       dataList.forEach(data => addMarkerToMap(data));
     },
@@ -169,7 +158,6 @@ function geoFindMe() {
     console.log("SUCCESS!");
     latitude = position.coords.latitude;
     longitude = position.coords.longitude;
-    console.log("curcatlongdis", curLatLongDis);
     var location = new google.maps.LatLng(latitude, longitude);
     setCurrentPos(location);
   }
@@ -186,13 +174,36 @@ function geoFindMe() {
 function initMap() {
   geocoder = new google.maps.Geocoder();
   map = new google.maps.Map(document.getElementById("map"), { zoom: 16 });
+  map.addListener("dragstart", mapDragstartEventFunction);
   map.addListener("dragend", mapDragendEventFunction);
 }
 
+function mapDragstartEventFunction() {
+  startingPoint = map.getCenter();
+}
+
 //lädt die Spätis für die Mitte der Karte nach dem Ziehen
-function mapDragendEventFunction() {
+function mapDragendEventFunction(e) {
   var location = map.getCenter();
+  console.log("Start ud End", startingPoint, location);
+  var p2pDistance = google.maps.geometry.spherical.computeDistanceBetween(
+    startingPoint,
+    location
+  );
+  if (p2pDistance > 450) {
+    clearMap();
+  }
+  console.log("DIST", p2pDistance);
   loadSpaetis(location, distance);
+}
+
+function clearMap() {
+  if (myMarker.length) {
+    myMarker.forEach(indivMarker => {
+      indivMarker.setMap(null); //dem Marker wird an dieser Stelle keine Map mehr zugeordnet
+    });
+    myMarker = [];
+  }
 }
 
 function setCurrentPos(location, distance) {
