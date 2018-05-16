@@ -1,7 +1,14 @@
 const express = require("express");
 const http = require("http");
 const app = express();
-const { Token } = process.ENV || require("./secrets.json");
+let Token;
+if (process.env.Token) {
+  Token = process.env.Token;
+} else {
+  Token = require("./secrets.json").Token;
+}
+console.log("TOKEN", Token);
+
 const request = require("request");
 const hb = require("express-handlebars");
 
