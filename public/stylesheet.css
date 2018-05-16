@@ -6,7 +6,7 @@ body {
 }
 
 header {
-  height: 6vh;
+  height: 45px;
   top: 0vh;
   position: relative;
   padding: 1vh;
@@ -68,7 +68,7 @@ header {
 }
 
 #map {
-  height: 100vh;
+  height: 100%;
   width: 100vw;
   top: 0;
 }
@@ -113,6 +113,10 @@ header {
   cursor: pointer;
 }
 
+h3 {
+  text-decoration: underline;
+}
+
 .spaetiAddress {
   font-weight: bold;
 }
@@ -124,11 +128,33 @@ header {
 
 .titles {
   margin-top: 5vh;
-
   font-weight: bold;
 }
 
 .offer {
   white-space: pre-line;
   font-weight: normal;
+}
+
+.distance {
+  font-weight: normal;
+  line-height: 0;
+}
+
+.distanceTime {
+  font-weight: normal;
+  display: inline-block;
+  line-height: 0;
+}
+
+.copyright {
+  padding-left: 5px;
+  margin: 0;
+  display: inline-block;
+  bottom: -15px;
+  height: 1px;
+  width: 200px;
+  font-weight: bold;
+  color: grey;
+  position: absolute;
 }
