@@ -68,7 +68,7 @@ async function addCustomMarker(data) {
 
     $(".name").html(singleMarker.Name);
     $(".spaetiAddress").html(singleMarker.Address);
-    $(".distance").html(`Ca. ${meter} meter`);
+    $(".distance").html(`Ca. ${meter} meters`);
     $(".distanceTime").html(`Ca. ${minutes} minutes to walk`);
     $(".offer").html(listOfItems);
 

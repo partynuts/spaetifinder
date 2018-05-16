@@ -26,7 +26,7 @@ app.get("/results", function(req, res) {
   console.log("req query", req.query);
   var qs = {
     action: "list",
-    apitoken: secrets.Token || process.env.Token,
+    apitoken: secrets.Token || process.ENV.Token,
     lat: req.query.lat,
     long: req.query.long,
     distance: req.query.distance
