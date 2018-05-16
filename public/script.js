@@ -2,11 +2,18 @@ var curLatLongDis;
 var myLatLng = [];
 var map;
 var defaultDistance = 0.6;
+var distance;
 var currentPositionMarker;
 var myMarker = [];
 var geocoder;
 var reqSpaetis;
 var meter;
+
+function init() {
+  initMap();
+  geoFindMe();
+}
+
 $("#searchAddress").on("click touchstart", function searchAddress() {
   var address = $("#address");
   geocoder.geocode({ address: address.val() }, function(results, status) {
@@ -97,6 +104,7 @@ async function addCustomMarker(data) {
 }
 
 function clearMap() {
+  return;
   if (myMarker.length) {
     myMarker.forEach(indivMarker => {
       indivMarker.setMap(null); //dem Marker wird an dieser Stelle keine Map mehr zugeordnet
@@ -105,13 +113,10 @@ function clearMap() {
   }
 }
 
-function loadSpaetis(location, defaultDistance) {
-  if (reqSpaetis) {
-    reqSpaetis.abort();
-  }
-  console.log("def dist", defaultDistance);
-  var curLatLongDis = getDistanceFromCurrentLocation(location, defaultDistance);
-  console.log("curcatlongdis in getDistanceFromCurrentLocation", curLatLongDis);
+function loadSpaetis(location, distance) {
+  console.log("def dist", distance);
+  var curLatLongDis = getGeoSearchParams(location, distance || defaultDistance);
+  console.log("curcatlongdis in getGeoSearchParams", curLatLongDis);
   reqSpaetis = $.ajax({
     url: "/results" + curLatLongDis,
     method: "GET",
@@ -119,23 +124,7 @@ function loadSpaetis(location, defaultDistance) {
     success: function(dataList) {
       clearMap();
       console.log("DATALIST", dataList);
-      dataList.forEach((data, index) => {
-        var latlng = new google.maps.LatLng(
-          parseFloat(data.Lat),
-          parseFloat(data.Long)
-        );
-
-        addCustomMarker({
-          Name: data.Name,
-          Address: data.Street,
-          Opening: data.BusinessHours,
-          Offer: data.tags,
-          Distance: data.distance,
-          id: data.ID,
-          Position: latlng,
-          Index: index //nötig für das setTimeout
-        });
-      });
+      dataList.forEach(data => addMarkerToMap(data));
     },
     error: function() {
       console.log("ERROR in loading Spätis");
@@ -143,20 +132,38 @@ function loadSpaetis(location, defaultDistance) {
   });
 }
 
-function getDistanceFromCurrentLocation(location, defaultDistance) {
-  console.log("DEF DISTANCE", defaultDistance);
+function addMarkerToMap(data) {
+  var latlng = new google.maps.LatLng(
+    parseFloat(data.Lat),
+    parseFloat(data.Long)
+  );
+
+  addCustomMarker({
+    Name: data.Name,
+    Address: data.Street,
+    Opening: data.BusinessHours,
+    Offer: data.tags,
+    Distance: data.distance,
+    id: data.ID,
+    Position: latlng
+    // Index: index //nötig für das setTimeout
+  });
+}
+
+function getGeoSearchParams(location, distance) {
+  console.log("DEF DISTANCE", distance);
   return (
     "?&lat=" +
     location.lat() +
     "&long=" +
     location.lng() +
     "&distance=" +
-    defaultDistance
+    distance
   );
 }
 
 function geoFindMe() {
-  initMap();
+  navigator.geolocation.getCurrentPosition(success, error);
 
   function success(position) {
     console.log("SUCCESS!");
@@ -165,12 +172,6 @@ function geoFindMe() {
     console.log("curcatlongdis", curLatLongDis);
     var location = new google.maps.LatLng(latitude, longitude);
     setCurrentPos(location);
-    // enableWatchPosition(location);
-    // enableOrientationArrow(location);
-    // id;
-    // watchMyPos(position);
-    // console.log("watch my pos", watchMyPos);
-    // console.log("id nav", id);
   }
 
   function error() {
@@ -179,52 +180,31 @@ function geoFindMe() {
     console.log("ACCESS DENIED. DEFAULT POS", latitude, longitude);
     var location = new google.maps.LatLng(latitude, longitude);
     setCurrentPos(location);
-    // enableWatchPosition(location);
-    // enableOrientationArrow(location);
   }
-
-  navigator.geolocation.getCurrentPosition(success, error);
-  // console.log(
-  //   "NAVIGATOR",
-  //   navigator.geolocation.getCurrentPosition(success, error)
-  // );
 }
 
 function initMap() {
   geocoder = new google.maps.Geocoder();
-  var myOptions = {
-    zoom: 16
-  };
-
-  map = new google.maps.Map(document.getElementById("map"), myOptions);
-
+  map = new google.maps.Map(document.getElementById("map"), { zoom: 16 });
   map.addListener("dragend", mapDragendEventFunction);
 }
 
 //lädt die Spätis für die Mitte der Karte nach dem Ziehen
-function mapDragendEventFunction(event) {
+function mapDragendEventFunction() {
   var location = map.getCenter();
-  loadSpaetis(location);
+  loadSpaetis(location, distance);
 }
 
-function setCurrentPos(location, defaultDistance) {
+function setCurrentPos(location, distance) {
   map.setCenter(location);
-  zoomFunction(location);
+  // zoomFunction(location);
 
   if (currentPositionMarker) {
-    console.log("default distance 2", defaultDistance);
+    console.log("default distance 2", distance);
 
     currentPositionMarker.setPosition(location);
   } else {
-    var infowindow = new google.maps.InfoWindow({
-      content:
-        `circles show distance within` +
-        `\n` +
-        `radius of 200, 400 & 600 meters`,
-      position: location
-    });
-
-    console.log("default distance 1", defaultDistance);
+    console.log("default distance 1", distance);
     var image = "./here.png";
 
     currentPositionMarker = new google.maps.Marker({
@@ -240,42 +220,10 @@ function setCurrentPos(location, defaultDistance) {
       title: "You are here"
     });
 
-    currentPositionMarker.addListener("click", function() {
-      infowindow.open(map, circle);
-    });
-
-    var circle = new google.maps.Circle({
-      map: map,
-      radius: 200,
-      fillColor: "#fdd6ce",
-      fillOpacity: 0.1,
-      strokeWeight: 1.5,
-      strokeColor: "#fa9986",
-      title: "INFOOOO"
-    });
-    var circle1 = new google.maps.Circle({
-      map: map,
-      radius: 400,
-      fillColor: "#CCEEFF",
-      strokeWeight: 1,
-      strokeColor: "#006699"
-    });
-    var circle2 = new google.maps.Circle({
-      map: map,
-      radius: 600,
-      fillColor: "#d1cadf",
-      strokeWeight: 1,
-      strokeColor: "#837798"
-    });
-
-    circle.bindTo("center", currentPositionMarker, "position");
-    circle1.bindTo("center", currentPositionMarker, "position");
-    circle2.bindTo("center", currentPositionMarker, "position");
+    loadSpaetis(location, 0.6);
+    // enableWatchPosition(location);
+    // enableOrientationArrow(location);
   }
-
-  loadSpaetis(location, 0.6);
-  // enableWatchPosition(location);
-  // enableOrientationArrow(location);
 }
 
 function zoomFunction(location) {
@@ -286,35 +234,35 @@ function zoomFunction(location) {
     console.log("User Zoom", userZoom);
     // infowindow.setContent("Zoom: " + map.getZoom());
     if (userZoom == 18) {
-      defaultDistance = 0.4;
-      console.log("def Dis", location, defaultDistance);
+      distance = 0.4;
+      console.log("def Dis", location, distance);
     }
     if (userZoom == 17) {
-      defaultDistance = 0.5;
-      console.log("def Dis", location, defaultDistance);
+      distance = 0.5;
+      console.log("def Dis", location, distance);
     }
     if (userZoom == 16) {
-      defaultDistance = 0.7;
-      console.log("def Dis", location, defaultDistance);
+      distance = 0.7;
+      console.log("def Dis", location, distance);
     }
     if (userZoom == 15) {
-      defaultDistance = 0.9;
-      console.log("def Dis", location, defaultDistance);
+      distance = 0.9;
+      console.log("def Dis", location, distance);
     }
     if (userZoom == 14) {
-      defaultDistance = 1.1;
-      console.log("def Dis", location, defaultDistance);
+      distance = 1.1;
+      console.log("def Dis", location, distance);
     }
     if (userZoom == 13) {
-      defaultDistance = 1.3;
-      console.log("def Dis", location, defaultDistance);
+      distance = 1.3;
+      console.log("def Dis", location, distance);
     }
     if (userZoom == 12) {
-      defaultDistance = 1.5;
-      console.log("def Dis", location, defaultDistance);
+      distance = 1.5;
+      console.log("def Dis", location, distance);
     }
     console.log("SOMETHING WEIRD HAPPENING");
-    loadSpaetis(location, defaultDistance);
+    loadSpaetis(location, distance);
   });
 }
 
