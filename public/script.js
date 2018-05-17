@@ -9,18 +9,23 @@ var geocoder;
 var reqSpaetis;
 var meter;
 var startingPoint;
+var watchID;
+var geoLoc;
+var watchPositionMarker;
+var myLocation;
 
 function init() {
   initMap();
   geoFindMe();
+  // getLocationUpdate();
 }
 
 $("#searchAddress").on("click touchstart", function searchAddress() {
   var address = $("#address");
   geocoder.geocode({ address: address.val() }, function(results, status) {
     if (status == google.maps.GeocoderStatus.OK) {
-      var location = results[0].geometry.location;
-      setCurrentPos(location);
+      myLocation = results[0].geometry.location;
+      setCurrentPos(myLocation);
     } else {
       alert("Geocode was not successful for the following reason: " + status);
     }
@@ -28,7 +33,7 @@ $("#searchAddress").on("click touchstart", function searchAddress() {
 });
 
 async function addCustomMarker(data) {
-  var image = "./beer.png";
+  var image = "./beerinhand.png";
 
   var singleMarker = await new google.maps.Marker({
     position: data.Position,
@@ -54,8 +59,7 @@ async function addCustomMarker(data) {
   // }, data.Index * 200);
 
   singleMarker.addListener("click", function(e) {
-    $(".modal").css("display", "block");
-
+    $("#modal").css("display", "block");
     $(".modal-body").animate(
       {
         display: "block",
@@ -68,7 +72,7 @@ async function addCustomMarker(data) {
     );
 
     meter = Math.round(singleMarker.Distance * 1000);
-    var minutes = Math.round(meter / 1.2 / 60);
+    var minutes = Math.round(meter / 60);
     var listOfItems = "";
     singleMarker.Offer.forEach(item => {
       listOfItems += `${item.Caption}, `;
@@ -76,6 +80,17 @@ async function addCustomMarker(data) {
 
     $(".name").html(singleMarker.Name);
     $(".spaetiAddress").html(singleMarker.Address);
+    $(".addressLink").attr(
+      "href",
+      `https://maps.google.com/?daddr=${singleMarker.position}`
+    );
+    $(".addLinkDir").attr(
+      "href",
+      `https://maps.google.com/maps?saddr=${myLocation}&daddr=${
+        singleMarker.position
+      }`
+    );
+
     $(".distance").html(`Ca. ${meter} meters`);
     $(".distanceTime").html(`Ca. ${minutes} minutes to walk`);
     $(".offer").html(listOfItems);
@@ -86,9 +101,12 @@ async function addCustomMarker(data) {
       $(".openingHours").html(singleMarker.Opening);
     }
   });
+  closePopup();
+}
 
+function closePopup() {
   $("#closeTag").on("click touchstart", function() {
-    $(".modal").fadeOut(
+    $("#modal").fadeOut(
       {
         display: "none",
         height: "toggle"
@@ -102,10 +120,36 @@ async function addCustomMarker(data) {
     $(".modal-body").css("display", "none");
     // $(".modal-body").css("display", "none");
   });
+
+  $("#modal").on("click touchstart", function() {
+    if ($(".modal-body").css("display", "block")) {
+      $("#modal").fadeOut(
+        {
+          display: "none",
+          height: "toggle"
+        },
+        700,
+        function() {
+          console.log("Animation complete");
+        }
+      );
+
+      $(".modal-body").css("display", "none");
+    }
+
+    // $(".modal-body").css("display", "none");
+  });
 }
 
-function loadSpaetis(location) {
-  var curLatLongDis = getGeoSearchParams(location, distance || defaultDistance);
+$(".menuContainer").on("click", function toggleMenu() {
+  $(".menu").toggle(500);
+});
+
+function loadSpaetis(myLocation) {
+  var curLatLongDis = getGeoSearchParams(
+    myLocation,
+    distance || defaultDistance
+  );
   console.log("SUCHPARAMS", curLatLongDis);
   reqSpaetis = $.ajax({
     url: "/results" + curLatLongDis,
@@ -152,23 +196,76 @@ function addMarkerToMap(data) {
 // }
 
 function geoFindMe() {
-  navigator.geolocation.getCurrentPosition(success, error);
+  navigator.geolocation.getCurrentPosition(success, error, {
+    enableHighAccuracy: true,
+    timeout: 5000
+  });
 
   function success(position) {
     console.log("SUCCESS!");
     latitude = position.coords.latitude;
     longitude = position.coords.longitude;
-    var location = new google.maps.LatLng(latitude, longitude);
-    setCurrentPos(location);
+    myLocation = new google.maps.LatLng(latitude, longitude);
+    setCurrentPos(myLocation);
+    // getLocationUpdate();
   }
 
-  function error(a) {
-    console.log("ERROR", a);
+  function error(failure) {
     latitude = 52.520007;
     longitude = 13.404954;
     console.log("ACCESS DENIED. DEFAULT POS", latitude, longitude);
-    var location = new google.maps.LatLng(latitude, longitude);
-    setCurrentPos(location);
+
+    myLocation = new google.maps.LatLng(latitude, longitude);
+    if (failure.message.indexOf("Only secure origins are allowed") == 0) {
+      // var infoWindow = new google.maps.InfoWindow({
+      //   content: "Current location not found",
+      //   position: location
+      // });
+      // infoWindow.open(map);
+      alert(
+        "We were unable to find your current position. Use the address search field to get Spätis near you."
+      );
+    }
+    setCurrentPos(myLocation);
+  }
+}
+
+function getLocationUpdate(myLocation) {
+  // if (navigator.geolocation) {
+  // timeout at 60000 milliseconds (60 seconds)
+  var options = { timeout: 60000 };
+  geoLoc = navigator.geolocation;
+  watchID = geoLoc.watchPosition(
+    position => {
+      console.log("GEtting watch pos");
+      var icon = "./manup-icon.png";
+      watchPositionMarker = new google.maps.Marker({
+        position: myLocation,
+        map: map,
+        icon: {
+          url: icon,
+          scaledSize: {
+            width: 100,
+            height: 100
+          }
+        },
+        title: "You are here"
+      });
+      console.log(position, map);
+    },
+    errorHandler,
+    watchPositionMarker
+  );
+  // } else {
+  //   alert("Sorry, browser does not support geolocation!");
+  // }
+}
+
+function errorHandler(err) {
+  if (err.code == 1) {
+    alert("Error: Access is denied!");
+  } else if (err.code == 2) {
+    alert("Error: Position is unavailable!");
   }
 }
 
@@ -186,17 +283,17 @@ function mapDragstartEventFunction() {
 
 //lädt die Spätis für die Mitte der Karte nach dem Ziehen
 function mapDragendEventFunction(e) {
-  var location = map.getCenter();
-  console.log("Start ud End", startingPoint, location);
+  myLocation = map.getCenter();
+  console.log("Start ud End", startingPoint, myLocation);
   var p2pDistance = google.maps.geometry.spherical.computeDistanceBetween(
     startingPoint,
-    location
+    myLocation
   );
   if (p2pDistance > 450) {
     clearMap();
   }
   console.log("DIST", p2pDistance);
-  loadSpaetis(location);
+  loadSpaetis(myLocation);
 }
 
 function clearMap() {
@@ -208,14 +305,14 @@ function clearMap() {
   }
 }
 
-function setCurrentPos(location) {
-  map.setCenter(location);
+function setCurrentPos(myLcation) {
+  map.setCenter(myLcation);
   if (currentPositionMarker) {
-    currentPositionMarker.setPosition(location);
+    currentPositionMarker.setPosition(myLcation);
   } else {
     var image = "./here.png";
     currentPositionMarker = new google.maps.Marker({
-      position: location,
+      position: myLcation,
       map: map,
       icon: {
         url: image,
@@ -227,12 +324,12 @@ function setCurrentPos(location) {
       title: "You are here"
     });
   }
-  loadSpaetis(location);
+  loadSpaetis(myLocation);
 }
 
 function zoomFunction() {
-  var location = map.getCenter();
-  console.log("LOCATIONN in zoomfn", location);
+  myLocation = map.getCenter();
+  console.log("LOCATIONN in zoomfn", myLocation);
   var userZoom = map.getZoom();
   if (userZoom == 18) {
     distance = 0.4;
@@ -256,5 +353,5 @@ function zoomFunction() {
     distance = 1.5;
   }
   console.log("DISTANCE", distance);
-  loadSpaetis(location);
+  loadSpaetis(myLocation);
 }

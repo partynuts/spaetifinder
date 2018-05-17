@@ -23,24 +23,36 @@
     </div>
     <div class="menuContainer">
       <i class="fas fa-ellipsis-v" style="font-size: 1em; color:white"></i>
+      <div class="menu">
 
+        Add Späti
+      </div>
     </div>
+
   </div>
 </header>
 
 <body>
   {{{body}}}
+
   <div id="map"></div>
 
   <div id="modal" class="modal">
-    <div class="modal-body">
-      <p id="closeTag">x</p>
+    <p id="closeTag">x</p>
+  </div>
+
+  <div class="modal-body">
+
+    <div class="modalContent">
       <h3 class="name"></h3>
-      <p class="spaetiAddress"></p>
+      <!-- <a class="addressLink"> -->
+        <p class="spaetiAddress"></p>
+      <!-- </a> -->
+      <a class="addLinkDir">Get directions </a>
       <div class="titles">Distance to current location:
-      <p class="distance"></p>
-      <p class="distanceTime"></p>
-    </div>
+        <p class="distance"></p>
+        <p class="distanceTime"></p>
+      </div>
       <div class="titles">Opening hours:
         <p class="openingHours"></p>
       </div>
@@ -49,7 +61,8 @@
       </div>
     </div>
   </div>
-<p class="copyright"> &copy; Parinaz Roghany 2018 </p>
+
+  <p class="copyright"> &copy; Parinaz Roghany 2018 </p>
   <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
   <script type="text/javascript" src="getGeoSearchParams.js"></script>
 
