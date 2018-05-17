@@ -20,14 +20,17 @@ function init() {
   // getLocationUpdate();
 }
 
-$("#searchAddress").on("click touchstart", function searchAddress() {
+$("#searchAddress").on("click", function searchAddress() {
   var address = $("#address");
   geocoder.geocode({ address: address.val() }, function(results, status) {
     if (status == google.maps.GeocoderStatus.OK) {
-      myLocation = results[0].geometry.location;
+      myGeoLoc = results[0].geometry.location;
+      myLocation = myGeoLoc;
       setCurrentPos(myLocation);
+      address.val("");
     } else {
       alert("Geocode was not successful for the following reason: " + status);
+      address.val("");
     }
   });
 });
@@ -84,9 +87,10 @@ async function addCustomMarker(data) {
       "href",
       `https://maps.google.com/?daddr=${singleMarker.position}`
     );
+
     $(".addLinkDir").attr(
       "href",
-      `https://maps.google.com/maps?saddr=${myLocation}&daddr=${
+      `https://maps.google.com/maps?saddr=${myGeoLoc}&daddr=${
         singleMarker.position
       }`
     );
@@ -142,7 +146,16 @@ function closePopup() {
 }
 
 $(".menuContainer").on("click", function toggleMenu() {
-  $(".menu").toggle(500);
+  if ($(".menu").css("display") == "none") {
+    $(".menu").slideToggle("slow", function() {
+      $(".menu").css("display", "block");
+    });
+  } else {
+    $(".menu").slideToggle("slow", function() {
+      $(".menu").css("display", "none");
+    });
+  }
+  // $(".menu").toggle(500);
 });
 
 function loadSpaetis(myLocation) {
@@ -205,7 +218,10 @@ function geoFindMe() {
     console.log("SUCCESS!");
     latitude = position.coords.latitude;
     longitude = position.coords.longitude;
-    myLocation = new google.maps.LatLng(latitude, longitude);
+    myGeoLoc = new google.maps.LatLng(latitude, longitude);
+    myLocation = myGeoLoc;
+    console.log("My geo loc", myGeoLoc);
+    console.log("my Location", myLocation);
     setCurrentPos(myLocation);
     // getLocationUpdate();
   }
@@ -214,14 +230,10 @@ function geoFindMe() {
     latitude = 52.520007;
     longitude = 13.404954;
     console.log("ACCESS DENIED. DEFAULT POS", latitude, longitude);
+    myGeoLoc = new google.maps.LatLng(latitude, longitude);
+    myLocation = myGeoLoc;
 
-    myLocation = new google.maps.LatLng(latitude, longitude);
     if (failure.message.indexOf("Only secure origins are allowed") == 0) {
-      // var infoWindow = new google.maps.InfoWindow({
-      //   content: "Current location not found",
-      //   position: location
-      // });
-      // infoWindow.open(map);
       alert(
         "We were unable to find your current position. Use the address search field to get Spätis near you."
       );
