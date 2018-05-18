@@ -11,27 +11,32 @@
 </head>
 
 
-<header>
-  <div class="wrapper">
-
-    <div class="appName">
-      Spätifinder Berlin
-    </div>
-    <div class="searchContainer">
-      <input type="text" id="address" placeholder=" e.g. Skalitzer Straße"></input>
-      <button type="submit" id="searchAddress">Search</button>
-    </div>
-    <div class="menuContainer">
-      <i class="fas fa-ellipsis-v" style="font-size: 1em; color:white"></i>
-      <div class="menu">
-        Add Späti
-      </div>
-    </div>
-
-  </div>
-</header>
 
 <body>
+  <header>
+    <div class="wrapper">
+
+      <a href="/spaetifinder">
+        <div class="appName">
+          Spätifinder Berlin
+        </div>
+      </a>
+      <div class="searchContainer">
+        <input type="text" id="address" placeholder=" e.g. Skalitzer Straße"></input>
+        <button type="submit" id="searchAddress">Search</button>
+      </div>
+      <div class="menuContainer">
+        <i class="fas fa-ellipsis-v" style="font-size: 1em; color:white"></i>
+        <div class="menu">
+          <a class="menuList" href="/addspaeti"> Add Späti </a>
+          <a class="menuList" href="/spaetifinder">Map </a>
+        </div>
+      </div>
+
+
+
+    </div>
+  </header>
   {{{body}}}
 
   <div id="map"></div>
@@ -61,16 +66,20 @@
     </div>
   </div>
 
+
+
   <p class="copyright"> &copy; Parinaz Roghany 2018 </p>
+
+
   <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
   <script type="text/javascript" src="getGeoSearchParams.js"></script>
 
   <script type="text/javascript" src="script.js"></script>
-
-  <script async defer src="
+  <script src="
 
   https://maps.googleapis.com/maps/api/js?key=AIzaSyD4WhuiOWGjYKxfeO7RrqJsk0llTAEx5Kc&callback=init&libraries=geometry">
   </script>
+
 
 
 </body>

@@ -207,6 +207,14 @@ function addMarkerToMap(data) {
 //     distance
 //   );
 // }
+console.log($(".list").length);
+
+window.addEventListener("click", function(e) {
+  if (e.target === $(".list")) {
+    loadAllSpaetis();
+  }
+});
+// $(".list").on("click", loadAllSpaetis);
 
 function geoFindMe() {
   navigator.geolocation.getCurrentPosition(success, error, {

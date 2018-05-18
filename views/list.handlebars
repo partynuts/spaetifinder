@@ -1,0 +1,80 @@
+
+
+<script id="allSpaetis" type="text/x-handlebars-template">
+<div class="container">
+
+<div class="spaetisBerlin">
+  <table>
+    <thead>
+      <tr>
+         <th scope="col" class="tname">Name</th>
+         <th scope="col" class="tage">Address</th>
+         <th scope="col" class="tcity">Business Hours</th>
+      </tr>
+    </thead>
+  </table>
+{{#spaetiList}}
+<table class="spaetiTable">
+  <tbody>
+    <tr>
+       <td class="tname">Name{{Name}} </td>
+      <td class="tage">Address{{Street}}</td>
+      <td class="tcity">Opening{{BusinessHours}}</td>
+    </tr>
+  </tbody>
+</table>
+{{/spaetiList}}
+</div>
+</div>
+
+</script>
+
+
+function loadAllSpaetis(latLongDis) {
+  console.log("ALL SPÄTIS LOADING");
+  var latLongDisAll = "?&lat=52.520007&long=13.404954&distance=100";
+
+  console.log("PARAMS FOR ALL SPÄTIS", latLongDisAll);
+  reqAllSpaetis = $.ajax({
+    url: "/list",
+    data: latLongDisAll,
+    method: "GET",
+    type: "application/json",
+    success: function(spaetiList) {
+      console.log("DATALIST ALL SPÄTIS", spaetiList);
+      var source = $("#allSpaetis").html();
+      var template = Handlebars.compile(source);
+      var html = template({
+        spaetiList: spaetiList,
+        test: "test"
+      });
+      $("#work").append(html);
+      // var templateStuff = Handlebars.templates.allSpaetis({
+      //   spaetiList: spaetiList,
+      //   test: "test"
+      // });
+      // var something = document.getElementsByClassName("appName")[0];
+      // something.innerHTML = templateStuff;
+      console.log("TEMPLATESTUFF", html);
+      // document.body.innerHTML = spaetiList;
+      // var allSpaetis = $("#allSpaetis").innerHTML;
+      // var renderTemp = Handlebars.compile(spaetiList);
+      // allSpaetis.forEach(item => {
+      //   $("#results").innerHTML = renderTemp(item);
+      // });
+    },
+    error: function() {
+      console.log("ERROR in loading Spätis");
+    }
+  });
+}
+
+
+Handlebars.templates = Handlebars.templates || {};
+var templates = document.querySelectorAll(
+  // 'script[type="text/x-handlebars-template"]'
+  "template"
+);
+Array.prototype.slice.call(templates).forEach(function(script) {
+  Handlebars.templates[script.id] = Handlebars.compile(script.innerHTML);
+});

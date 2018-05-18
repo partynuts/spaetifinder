@@ -1,0 +1,71 @@
+<!doctype html>
+
+<head>
+  <title>{{title}}</title>
+  <meta name="viewport" content="initial-scale=1.0">
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="/stylesheet.css">
+
+</head>
+
+<header>
+  <div class="wrapper">
+
+    <a href="/spaetifinder">
+      <div class="appName">
+        Spätifinder Berlin
+      </div>
+    </a>
+    <div class="searchContainer">
+      <input type="text" id="address" placeholder=" e.g. Skalitzer Straße"></input>
+      <button type="submit" id="searchAddress">Search</button>
+    </div>
+    <div class="menuContainer">
+      <i class="fas fa-ellipsis-v" style="font-size: 1em; color:white"></i>
+      <div class="menu">
+        <a class="menuList" href="/addspaeti"> Add Späti </a>
+        <a class="menuList" href="/spaetifinder">Map</a>
+      </div>
+    </div>
+
+</header>
+
+<body>
+  {{{body}}}
+
+  <div class="formContainer">
+    <div class="descr">
+      <h3>Add a Späti</h3>
+      <p>Help us keep the Spätifinder up-to-date and list all Spätis in Berlin. If you see or know of a Späti that is not yet in the List or on the map, Pleaseadd add it to our database by filling out the form below. The more information you insert the greater
+        the benefit for everyone.
+      </p>
+    </div>
+    <div class="formWrapper">
+
+      <form method="POST">
+        <label> Späti Name <input class="input" type="text" name="first" placeholder="Spätkauf 36" autofocus></input></label>
+        <label> Address <input class="input" type="text" name="last" placeholder="Skalitzer Str. 36"></input></label>
+        <label> Business Hours <input class="input" type="text" name="email" placeholder="Mo-Fr: 12-23 Uhr, Sa & Su 14 - 3 Uhr" > </input>
+        <label> Products <input class="input" type="text" name="pw"  placeholder="Beer, Mate, Bread..."> </input>
+
+      <button class="button" type="submit" name="button">Register</button>
+    </form>
+  </div>
+
+<div class="pic"> <img src="beerinhand.png"> </div>
+</div>
+<div class="copy"><p class="copyright"> &copy; Parinaz Roghany 2018 </p></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="getGeoSearchParams.js"></script>
+
+<script type="text/javascript" src="script.js"></script>
+
+
+
+
+</body>
+
+</html>

@@ -25,12 +25,16 @@ app.get("/", function(req, res, next) {
 app.get("/spaetifinder", function(req, res) {
   res.render("spaetifinder", {
     title: "Spaetifinder"
-    // layout: "main"
+  });
+});
+
+app.get("/addspaeti", function(req, res) {
+  res.render("addspaeti", {
+    title: "Spaetifinder"
   });
 });
 
 app.get("/results", function(req, res) {
-  console.log("req query", req.query);
   var qs = {
     action: "list",
     apitoken: Token,
@@ -38,7 +42,6 @@ app.get("/results", function(req, res) {
     long: req.query.long,
     distance: req.query.distance
   };
-  console.log("qs", qs);
   var request = require("request");
   request(
     {
@@ -46,11 +49,37 @@ app.get("/results", function(req, res) {
       qs
     },
     function(error, response, body) {
-      console.log("RESPONSE", response);
-      console.log("error:", error); // Print the error if one occurred
-      console.log("statusCode:", response && response.statusCode); // Print the response status code if a response was received
-      console.log("body:", body); // Print the HTML for the Google homepage.
       res.json(JSON.parse(body));
+    }
+  );
+});
+
+app.get("/list", (req, res, next) => {
+  console.log("REQ QUERY", req.query);
+  var qs = {
+    action: "list",
+    apitoken: Token,
+    lat: req.query.lat,
+    long: req.query.long,
+    distance: req.query.distance
+  };
+  if (!req.query.lat) {
+    return null;
+  }
+  var request = require("request");
+  request(
+    {
+      uri: "http://m.spätifinder.de/apiv2",
+      qs
+    },
+    (error, response, body) => {
+      // console.log("BODYYYYYYYYYYYYYYYY", JSON.parse(body));
+      var spaetis = JSON.parse(body);
+      console.log(spaetis[1]);
+      // for (var i = 0; i < spaetis.length; i++) {
+      // }
+
+      res.json(spaetis);
     }
   );
 });
