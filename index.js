@@ -18,11 +18,11 @@ app.set("view engine", "handlebars"); //diese beiden Zeilen bleiben immer gleich
 
 app.use(express.static(__dirname + "/public"));
 
-if (process.env.NODE_ENV == 'production' && !req.headers['x-forwarded-proto'].startsWith('http')) {
-
-        return res.redirect(`https://${req.hostname}${req.url}`);
-
-    }
+// if (process.env.NODE_ENV == 'production' && !req.headers['x-forwarded-proto'].startsWith('http')) {
+//
+//         return res.redirect(`https://${req.hostname}${req.url}`);
+//
+//     }
 
 app.get("/", function(req, res, next) {
   res.redirect("/spaetifinder");
