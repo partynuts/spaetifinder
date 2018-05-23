@@ -451,8 +451,55 @@ input:focus {
   .menuList {
     margin-left: 15px;
   }
+
+
+  .formContainer {
+    width: 39vw;
+      margin-left: 2vw;
+      height: 95vh;
+      overflow: visible;
+  }
+
+  .descr {
+    grid-row: 1;
+    border-radius: 5px;
+    width: 100%;
+    height: auto;
+    opacity: 70%;
+    padding: 10px 15px;
+    align-self: center;
+    font-size: 18px;
+  }
+
+  .formWrapper {
+    grid-row: 2;
+      border-radius: 5px;
+      height: auto;
+      margin-bottom: 30px;
+      padding: 5px 15px;
+      width: 100%;
+  }
+
+  form input {
+    width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 15px;
+  }
+
+  input:focus {
+    box-shadow: 0 0 10px rgba(255, 255, 255, 1), 0 0 20px rgba(255, 255, 255, 1), 0 0 30px rgba(255, 255, 255, 1), 0 0 40px #c600ff, 0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 50px #00ffff;
+  }
+
+
+
   label {
     font-weight: bold;
+font-size: 18px;
   }
   .button {
     margin-top: 10px;
@@ -484,7 +531,7 @@ input:focus {
   }
 
   .pic {
-    right: 32%;
+    right: 20%;
     position: absolute;
     top: 150px;
   }
